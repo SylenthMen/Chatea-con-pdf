@@ -3,8 +3,8 @@ import pdfplumber
 import openai
 import os
 
-# Configura tu clave API de OpenAI aquí
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 def extraer_texto_de_pdf_con_pdfplumber(ruta_pdf):
     texto_completo = ""
