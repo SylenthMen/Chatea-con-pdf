@@ -1,17 +1,18 @@
 import streamlit as st
-import fitz  # PyMuPDF
+import pdfplumber
 import openai
 import os
 
 # Configura tu clave API de OpenAI aquí
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-def extraer_texto_de_pdf(ruta_pdf):
-    doc = fitz.open(ruta_pdf)
+def extraer_texto_de_pdf_con_pdfplumber(ruta_pdf):
     texto_completo = ""
-    for pagina in doc:
-        texto_completo += pagina.get_text()
-    doc.close()
+    with pdfplumber.open(ruta_pdf) as pdf:
+        for pagina in pdf.pages:
+            texto = pagina.extract_text()
+            if texto:  # Verifica que se extrajo texto
+                texto_completo += texto + "\n"
     return texto_completo
 
 def hacer_pregunta_a_gpt(texto_contexto, pregunta):
@@ -47,8 +48,8 @@ if uploaded_file is not None:
     with open(temp_file_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
     
-    # Extrae el texto del PDF
-    texto_contexto = extraer_texto_de_pdf(temp_file_path)
+    # Extrae el texto del PDF usando pdfplumber
+    texto_contexto = extraer_texto_de_pdf_con_pdfplumber(temp_file_path)
     # Asegura que el texto no exceda el límite de tokens
     texto_contexto_limitado = texto_contexto[:4000]  # Ajusta según necesidad
 

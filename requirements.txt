@@ -2,5 +2,4 @@ streamlit
 openai
 openai==0.28.0
 fitz
-PyMuPDF
-PyMuPDF==1.18.19
+pdfplumber
